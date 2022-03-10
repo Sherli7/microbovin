@@ -8,6 +8,11 @@ import javax.persistence.Id;
 
 @Entity
 public class Troupeau extends AuditModel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long troupeauId;

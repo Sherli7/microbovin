@@ -1,5 +1,6 @@
 package spring.sherli.microservice.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import spring.sherli.microservice.entity.Bovins;
+import spring.sherli.microservice.entity.Troupeau;
 import spring.sherli.microservice.exception.ResourceNotFoundException;
 import spring.sherli.microservice.repository.BovinRepo;
 import spring.sherli.microservice.repository.TroupeauRepo;
@@ -31,12 +33,13 @@ public class BovinController {
 	@Autowired
 	private BovinRepo bRepo;
 	
+	@GetMapping("/bovins")
+	public List<Bovins>  getAllBovin(){
+		return (List<Bovins>) bRepo.findAll();
+	}
 
 	@GetMapping("/troupeau/{troupId}/bovins")
 	public Optional<Bovins> getAllBovinsByTroupId(@PathVariable("troupId") Long troupId){
-		if(!bRepo.existsById(troupId)){
-			throw new ResourceNotFoundException("Not found Tutorial with id = " + troupId);
-		}
 		return bRepo.findById(troupId);
 	}
     

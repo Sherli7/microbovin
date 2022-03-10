@@ -8,11 +8,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Entity
 public class Bovins extends AuditModel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8125550909285306885L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bovinId;
+	@Value("SODEPA_")
 	private String uniqeId;
 	private String firstPhysicId;
 	private String secPhysicId;
@@ -48,11 +55,11 @@ public class Bovins extends AuditModel {
 	}
 
 	public String getUniqeId() {
-		return uniqeId;
+		return " "+uniqeId;
 	}
 
 	public void setUniqeId(String uniqeId) {
-		this.uniqeId = uniqeId;
+		this.uniqeId = " "+uniqeId;
 	}
 
 	public String getFirstPhysicId() {
