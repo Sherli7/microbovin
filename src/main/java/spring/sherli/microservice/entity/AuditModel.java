@@ -1,19 +1,15 @@
 package spring.sherli.microservice.entity;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
@@ -22,29 +18,32 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
         allowGetters = true
 )
 public abstract class AuditModel implements Serializable {
-    @Temporal(TemporalType.TIMESTAMP)
+	
+	 @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss a", timezone = "GMT+1")
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
-    private Date createdAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdAt = LocalDateTime.now(ZoneId.of("UTC"));
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss a", timezone = "GMT+1")
     @Column(name = "updated_at", nullable = false)
-    @LastModifiedDate
-    private Date updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now(ZoneId.of("UTC"));
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	
+    
 }

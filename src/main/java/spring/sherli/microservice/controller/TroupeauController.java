@@ -1,10 +1,10 @@
 package spring.sherli.microservice.controller;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import spring.sherli.microservice.entity.Troupeau;
@@ -23,20 +23,21 @@ public class TroupeauController {
 	private TroupeauRepo tRepo;
 
 	@GetMapping("/troupeau")
-	public List<Troupeau> getMethodName() {
-		return (List<Troupeau>) tRepo.findAll();
+	public List<Troupeau> getTroupeau() {
+		return tRepo.findAll();
 	}
 
-	@PostMapping(value="/troupeau")
+	@PostMapping("/troupeau")
 	public Troupeau createTroupeau(@RequestBody Troupeau troupeau) {
 		return tRepo.save(troupeau);
 	}
 	
-	@PutMapping(value = "/troupeau/{id}")
+	@PutMapping("/troupeau/{id}")
 	public Troupeau updaTroupeau(@PathVariable("id") Long id, @RequestBody Troupeau troupeauRequest ){
 		return tRepo.findById(id).map(
 			troup -> {
 				troup.setName(troupeauRequest.getName());
+				troup.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
 				troup.setDesciption(troupeauRequest.getDesciption());
 				return tRepo.save(troup);
 			}
