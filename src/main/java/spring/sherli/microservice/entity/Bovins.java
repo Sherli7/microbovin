@@ -8,18 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Bovins {
+public class Bovins extends AuditModel {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bovinId;
@@ -27,7 +17,7 @@ public class Bovins {
 	private String firstPhysicId;
 	private String secPhysicId;
 	//@JsonFormat(pattern = "dd-MM-YYYY")
-	private String   birthDay;
+	private String birthDay;
 	//private String sex;
 	private String modeReproduction;
 	private Double weightAtBirth;
@@ -47,7 +37,7 @@ public class Bovins {
 	*/
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "troupeau_id")
-    private @NonNull Troupeau troupeau;
+    private  Troupeau troupeau;
 
 	public Long getBovinId() {
 		return bovinId;
@@ -153,7 +143,7 @@ public class Bovins {
 
 	public Bovins(Long bovinId, String uniqeId, String firstPhysicId, String secPhysicId, String birthDay, String sex,
 			String modeReproduction, Double weightAtBirth, Double heightAtBirth, String race, String robe,
-			String cornage, @NonNull Troupeau troupeau) {
+			String cornage,Troupeau troupeau) {
 		this.bovinId = bovinId;
 		this.uniqeId = uniqeId;
 		this.firstPhysicId = firstPhysicId;

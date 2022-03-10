@@ -1,67 +1,55 @@
 package spring.sherli.microservice.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
-import lombok.extern.slf4j.Slf4j;
 import spring.sherli.microservice.entity.Troupeau;
-import spring.sherli.microservice.service.TroupeauService;
+import spring.sherli.microservice.exception.ResourceNotFoundException;
+import spring.sherli.microservice.repository.TroupeauRepo;
+
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/mycow/troupeau")
-@Slf4j
+@RequestMapping("/api/mycow")
 public class TroupeauController {
 
+	
 	@Autowired
-	TroupeauService service;
-	
-	
-	@GetMapping("/{id}")
-	public Optional<Troupeau> getTroupeauById(@PathVariable("id") Long id){
-		return service.findById(id);
+	private TroupeauRepo tRepo;
+
+	@GetMapping("/troupeau")
+	public List<Troupeau> getMethodName() {
+		return (List<Troupeau>) tRepo.findAll();
+	}
+
+	@PostMapping(value="/troupeau")
+	public Troupeau createTroupeau(@RequestBody Troupeau troupeau) {
+		return tRepo.save(troupeau);
 	}
 	
-	@PostMapping
-	public Troupeau saveTroupeau( @Validated @RequestBody Troupeau troupeau)
-	    {
-	        return service.saveTroupeau(troupeau);
-	    }
-	
-	@GetMapping
-	public List<Troupeau> fetchBovinList(){
-		return service.fecthTroupeauList();
+	@PutMapping(value = "/troupeau/{id}")
+	public Troupeau updaTroupeau(@PathVariable("id") Long id, @RequestBody Troupeau troupeauRequest ){
+		return tRepo.findById(id).map(
+			troup -> {
+				troup.setName(troupeauRequest.getName());
+				troup.setDesciption(troupeauRequest.getDesciption());
+				return tRepo.save(troup);
+			}
+		).orElseThrow(()-> new ResourceNotFoundException("TroupeauId"+id+" not found"));
 	}
-	
-	@PutMapping("/{id}")
-	 
-    public Troupeau
-    updateTroupeau(@RequestBody Troupeau troupeau,
-                     @PathVariable("id") Long troupeauId)
-    {
-        return service.updateTroupeau(
-        		troupeau, troupeauId);
+
+	@DeleteMapping("/troupeau/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+        return tRepo.findById(id).map(post -> {
+            tRepo.delete(post);
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("TroupeauId " + id + " not found"));
     }
 
-	@DeleteMapping("/{id}")
-    public String deleteTroupById(@PathVariable("id")
-                                       Long id)
-    {
-        service.deleteTroupById(
-            id);
-        return "Deleted Successfully";
-    }
 
 }

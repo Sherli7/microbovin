@@ -15,7 +15,5 @@ public interface BovinService {
 	
 	Bovins updateBovins(Bovins bovins,Long bovinId);
 	
-	//Delete operation
-	
     void deleteBovinById(Long bovinsId);
 }

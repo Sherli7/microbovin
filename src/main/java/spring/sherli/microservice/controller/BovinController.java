@@ -1,10 +1,9 @@
 package spring.sherli.microservice.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,51 +15,62 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import spring.sherli.microservice.entity.Bovins;
-import spring.sherli.microservice.service.BovinService;
-import spring.sherli.microservice.service.TroupeauService;
+import spring.sherli.microservice.exception.ResourceNotFoundException;
+import spring.sherli.microservice.repository.BovinRepo;
+import spring.sherli.microservice.repository.TroupeauRepo;
+
+
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/mycow/bovin")
+@RequestMapping("/api/mycow")
 public class BovinController {
 
 	@Autowired
-	BovinService service;
+	private TroupeauRepo tRepo;
+
 	@Autowired
-	TroupeauService tServ;
+	private BovinRepo bRepo;
 	
-	@PostMapping("/{id}")
-	public Bovins saveBovin( @Validated @RequestBody Bovins bovin,@PathVariable("id") Long troupId)
-	    {
-	      return service.saveBovin(bovin,troupId);
-	    }
-	
-	@GetMapping
-	public List<Bovins> fetchBovinList(){
-		return service.fecthBovinsList();
+
+	@GetMapping("/troupeau/{troupId}/bovins")
+	public Optional<Bovins> getAllBovinsByTroupId(@PathVariable("troupId") Long troupId){
+		if(!bRepo.existsById(troupId)){
+			throw new ResourceNotFoundException("Not found Tutorial with id = " + troupId);
+		}
+		return bRepo.findById(troupId);
 	}
-	
-	@GetMapping("/{id}")
-	public Optional<Bovins> fetchBovinById(@PathVariable("id") Long bovinId){
-		return service.findById(bovinId);
+    
+	@PostMapping("/troupeau/{troupId}/bovins")
+    public Bovins createComment(@PathVariable (value = "troupId") Long troupId,
+                                  @RequestBody Bovins bovin) {
+					 return tRepo.findById(troupId).map(troup -> {
+							bovin.setTroupeau(troup);
+				return bRepo.save(bovin);
+				}).orElseThrow(() -> new ResourceNotFoundException("troupId " + troupId + " not found"));
 	}
-	
-	@PutMapping("/{id}")
-	 
-    public Bovins
-    updateDepartment(@RequestBody Bovins bovin,
-                     @PathVariable("id") Long bovinId)
-    {
-        return service.updateBovins(
-            bovin, bovinId);
+
+	//Changing the herd of a cow
+	@PutMapping("/troupeau/{troupId}/bovins/{bovinId}")
+    public Bovins updateComment(@PathVariable (value = "troupId") Long troupId,
+                                 @PathVariable (value = "bovinId") Long bovinId,
+                                 @RequestBody Bovins bovinRequest) {
+        if(!tRepo.existsById(troupId)) {
+            throw new ResourceNotFoundException("TroupId " + troupId + " not found");
+        }
+
+        return bRepo.findById(bovinId).map(bovin -> {
+            bovin.setTroupeau(bovinRequest.getTroupeau());
+            return bRepo.save(bovin);
+        }).orElseThrow(() -> new ResourceNotFoundException("BovinId " + bovinId + "not found"));
     }
-	
-	// Delete operation
-    @DeleteMapping("/{id}")
-    public String deleteBovinById(@PathVariable("id")
-                                       Long bovinId)
-    {
-        service.deleteBovinById(
-            bovinId);
-        return "Deleted Successfully";
+
+	//De-allocating a bovine to a group
+	@DeleteMapping("/troupeau/{troupId}/bovin/{bovinId}")
+    public ResponseEntity<?> deleteComment(@PathVariable (value = "troupId") Long troupId,
+                              @PathVariable (value = "bovinId") Long bovinId) {
+        return bRepo.findById(troupId).map(bovin -> {
+            bRepo.delete(bovin);
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("Bovin not found with id " + bovinId + " and postId " + troupId));
     }
 }
