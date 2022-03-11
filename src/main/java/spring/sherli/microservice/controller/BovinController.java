@@ -3,8 +3,9 @@ package spring.sherli.microservice.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import spring.sherli.microservice.entity.Bovins;
-import spring.sherli.microservice.entity.Troupeau;
 import spring.sherli.microservice.exception.ResourceNotFoundException;
-import spring.sherli.microservice.repository.BovinRepo;
 import spring.sherli.microservice.repository.TroupeauRepo;
+import spring.sherli.microservice.service.BovinService;
 
 
 @CrossOrigin(origins = "*")
@@ -28,52 +28,55 @@ import spring.sherli.microservice.repository.TroupeauRepo;
 public class BovinController {
 
 	@Autowired
-	private TroupeauRepo tRepo;
-
+	private BovinService bservice;
+	
 	@Autowired
-	private BovinRepo bRepo;
+	private TroupeauRepo trop;
 	
 	@GetMapping("/bovins")
-	public List<Bovins>  getAllBovin(){
-		return (List<Bovins>) bRepo.findAll();
+	public List<Bovins> getAllBovins(){
+		return bservice.findAllBovins();
 	}
+	
+	@GetMapping("/bovins/{id}")
+	public Optional<Bovins> getBovinById(@PathVariable("id") Long id) throws ResourceNotFoundException{
+		return bservice.findById(id);
+	}
+	
 
-	@GetMapping("/troupeau/{troupId}/bovins")
-	public Optional<Bovins> getAllBovinsByTroupId(@PathVariable("troupId") Long troupId){
-		return bRepo.findById(troupId);
+	
+	@PostMapping("/bovins")
+	public Bovins saveBovin(@Valid @RequestBody Bovins bovin) throws ResourceNotFoundException{
+		return bservice.saveBovins(bovin);
 	}
     
-	@PostMapping("/troupeau/{troupId}/bovins")
-    public Bovins createComment(@PathVariable (value = "troupId") Long troupId,
-                                  @RequestBody Bovins bovin) {
-					 return tRepo.findById(troupId).map(troup -> {
-							bovin.setTroupeau(troup);
-				return bRepo.save(bovin);
-				}).orElseThrow(() -> new ResourceNotFoundException("troupId " + troupId + " not found"));
+
+	@PutMapping("/bovins/{id}")
+	public Bovins updateBovins(@Valid  @RequestBody Bovins bovin, @PathVariable("id") Long bovinId) throws ResourceNotFoundException {
+		return bservice.updateBovins(bovin, bovinId);
+		
 	}
-
-	//Changing the herd of a cow
-	@PutMapping("/troupeau/{troupId}/bovins/{bovinId}")
-    public Bovins updateComment(@PathVariable (value = "troupId") Long troupId,
-                                 @PathVariable (value = "bovinId") Long bovinId,
-                                 @RequestBody Bovins bovinRequest) {
-        if(!tRepo.existsById(troupId)) {
-            throw new ResourceNotFoundException("TroupId " + troupId + " not found");
-        }
-
-        return bRepo.findById(bovinId).map(bovin -> {
-            bovin.setTroupeau(bovinRequest.getTroupeau());
-            return bRepo.save(bovin);
-        }).orElseThrow(() -> new ResourceNotFoundException("BovinId " + bovinId + "not found"));
-    }
-
-	//De-allocating a bovine to a group
-	@DeleteMapping("/troupeau/{troupId}/bovin/{bovinId}")
-    public ResponseEntity<?> deleteComment(@PathVariable (value = "troupId") Long troupId,
-                              @PathVariable (value = "bovinId") Long bovinId) {
-        return bRepo.findById(troupId).map(bovin -> {
-            bRepo.delete(bovin);
-            return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException("Bovin not found with id " + bovinId + " and postId " + troupId));
-    }
+	
+	@PutMapping("/troupeau/{troupId}/bovins/{id}")
+	public Bovins updateBovinsTroupeau(@Valid  @RequestBody Bovins bovin,@PathVariable("troupId") Long troupId, @PathVariable("id") Long id) throws ResourceNotFoundException {
+		return bservice.ChangeBovinsTroupeau(bovin,id,troupId);
+		
+	}
+	
+	@DeleteMapping("/bovins/{id}")
+	public Boolean deleteBovins(@PathVariable("id") Long id) throws ResourceNotFoundException
+	{
+	 return	(Boolean) bservice.findById(id).map(bov->{
+		try {
+			return bservice.deleteBovins(id);
+		} catch (ResourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			new ResourceNotFoundException("Could not found bovin by id", null, id);
+		}
+		return null;
+	 }).orElseThrow(()-> new ResourceNotFoundException("This Bovin doesn't exist",null, id));
+	
+	}
+	
+	
 }

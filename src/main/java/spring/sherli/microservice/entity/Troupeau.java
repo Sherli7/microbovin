@@ -19,7 +19,7 @@ public class Troupeau extends AuditModel {
 	
 	private String name;
 
-	private String desciption;
+	private String description;
 
 	public Long getTroupeauId() {
 		return troupeauId;
@@ -37,12 +37,12 @@ public class Troupeau extends AuditModel {
 		this.name = name;
 	}
 
-	public String getDesciption() {
-		return desciption;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setDesciption(String desciption) {
-		this.desciption = desciption;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	

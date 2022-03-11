@@ -15,37 +15,43 @@ public class Bovins extends AuditModel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8125550909285306885L;
+	private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bovinId;
 	@Value("SODEPA_")
-	private String uniqeId;
+	private String uniqueid;
 	private String firstPhysicId;
 	private String secPhysicId;
 	//@JsonFormat(pattern = "dd-MM-YYYY")
 	private String birthDay;
-	//private String sex;
+	private String sex;
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
 	private String modeReproduction;
 	private Double weightAtBirth;
 	private Double heightAtBirth;
-	private String race;
-	private String robe;
+	private String country;
+	
 	private String cornage;
-	/*@Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "recorded_at", nullable = false, updatable = false)
-    @CreatedDate
-    private Date recordedAt;
-   */
-	/*@Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at", nullable = false)
-    @LastModifiedDate
-    private Date updatedAt;
-	*/
 	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "troupeau_id")
+    @JoinColumn(name = "troupeauid")
     private  Troupeau troupeau;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "robe_id")
+	private Robe robe;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "race_id")
+	private Race race;
+	
 	public Long getBovinId() {
 		return bovinId;
 	}
@@ -54,12 +60,12 @@ public class Bovins extends AuditModel {
 		this.bovinId = bovinId;
 	}
 
-	public String getUniqeId() {
-		return " "+uniqeId;
+	public String getUniqueid() {
+		return uniqueid;
 	}
 
-	public void setUniqeId(String uniqeId) {
-		this.uniqeId = " "+uniqeId;
+	public void setUniqueid(String uniqueid) {
+		this.uniqueid = uniqueid;
 	}
 
 	public String getFirstPhysicId() {
@@ -78,9 +84,6 @@ public class Bovins extends AuditModel {
 		this.secPhysicId = secPhysicId;
 	}
 
-
-
-
 	public String getBirthDay() {
 		return birthDay;
 	}
@@ -88,8 +91,6 @@ public class Bovins extends AuditModel {
 	public void setBirthDay(String birthDay) {
 		this.birthDay = birthDay;
 	}
-
-
 
 	public String getModeReproduction() {
 		return modeReproduction;
@@ -115,20 +116,24 @@ public class Bovins extends AuditModel {
 		this.heightAtBirth = heightAtBirth;
 	}
 
-	public String getRace() {
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public Race getRace() {
 		return race;
 	}
 
-	public void setRace(String race) {
+	public void setRace(Race race) {
 		this.race = race;
 	}
 
-	public String getRobe() {
-		return robe;
-	}
-
-	public void setRobe(String robe) {
-		this.robe = robe;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	public String getCornage() {
@@ -147,28 +152,15 @@ public class Bovins extends AuditModel {
 		this.troupeau = troupeau;
 	}
 
+	public Robe getRobe() {
+		return robe;
+	}
 
-	public Bovins(Long bovinId, String uniqeId, String firstPhysicId, String secPhysicId, String birthDay, String sex,
-			String modeReproduction, Double weightAtBirth, Double heightAtBirth, String race, String robe,
-			String cornage,Troupeau troupeau) {
-		this.bovinId = bovinId;
-		this.uniqeId = uniqeId;
-		this.firstPhysicId = firstPhysicId;
-		this.secPhysicId = secPhysicId;
-		this.birthDay = birthDay;
-		this.modeReproduction = modeReproduction;
-		this.weightAtBirth = weightAtBirth;
-		this.heightAtBirth = heightAtBirth;
-		this.race = race;
+	public void setRobe(Robe robe) {
 		this.robe = robe;
-		this.cornage = cornage;
-		this.troupeau = troupeau;
 	}
-
-	public Bovins() {
-		// TODO Auto-generated constructor stub
-	}
-
+	
+	
 	
 	
 }

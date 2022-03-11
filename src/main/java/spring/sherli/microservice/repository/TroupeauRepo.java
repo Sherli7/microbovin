@@ -6,4 +6,5 @@ import spring.sherli.microservice.entity.Troupeau;
 
 public interface TroupeauRepo extends JpaRepository<Troupeau, Long> {
 
+	
 }
