@@ -8,7 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.beans.factory.annotation.Value;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Bovins extends AuditModel {
@@ -26,22 +30,17 @@ public class Bovins extends AuditModel {
 	//@JsonFormat(pattern = "dd-MM-YYYY")
 	private String birthDay;
 	private String sex;
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
-
 	private String modeReproduction;
 	private Double weightAtBirth;
 	private Double heightAtBirth;
 	private String country;
 	
 	private String cornage;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "troupeauid")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonIgnore
     private  Troupeau troupeau;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -51,7 +50,7 @@ public class Bovins extends AuditModel {
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "race_id")
 	private Race race;
-	
+
 	public Long getBovinId() {
 		return bovinId;
 	}
@@ -92,6 +91,14 @@ public class Bovins extends AuditModel {
 		this.birthDay = birthDay;
 	}
 
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
 	public String getModeReproduction() {
 		return modeReproduction;
 	}
@@ -124,18 +131,6 @@ public class Bovins extends AuditModel {
 		this.country = country;
 	}
 
-	public Race getRace() {
-		return race;
-	}
-
-	public void setRace(Race race) {
-		this.race = race;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public String getCornage() {
 		return cornage;
 	}
@@ -159,8 +154,14 @@ public class Bovins extends AuditModel {
 	public void setRobe(Robe robe) {
 		this.robe = robe;
 	}
-	
-	
-	
+
+	public Race getRace() {
+		return race;
+	}
+
+	public void setRace(Race race) {
+		this.race = race;
+	}
+
 	
 }

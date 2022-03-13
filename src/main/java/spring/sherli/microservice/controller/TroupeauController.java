@@ -1,75 +1,79 @@
 package spring.sherli.microservice.controller;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import spring.sherli.microservice.entity.Bovins;
 import spring.sherli.microservice.entity.Troupeau;
 import spring.sherli.microservice.exception.ResourceNotFoundException;
-import spring.sherli.microservice.repository.BovinRepo;
 import spring.sherli.microservice.repository.TroupeauRepo;
-import spring.sherli.microservice.service.TroupService;
-
-import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/mycow")
 public class TroupeauController {
 
+	@Autowired
+	TroupeauRepo troupRepo;
 	
-	@Autowired
-	private TroupeauRepo tRepo;
-	@Autowired
-	private TroupService tservice;
-	
-	@Autowired
-	private BovinRepo brepo;
-
 	@GetMapping("/troupeau")
-	public List<Troupeau> getTroupeau() {
-		return tRepo.findAll();
-	}
+	  public ResponseEntity<List<Troupeau>> getAllTroupeau(@RequestParam(required = false) String name) {
+	    List<Troupeau> troups = new ArrayList<Troupeau>();
 
-	@PostMapping("/troupeau")
-	public Troupeau createTroupeau(@RequestBody Troupeau troupeau) {
-		return tRepo.save(troupeau);
-	}
-    
-	@PostMapping("/troupeau/{id}/bovins")
-    public Bovins createBovinFromTroupeau(@PathVariable("id") Long id,@Valid @RequestBody Bovins bovin) throws ResourceNotFoundException {
-		return tRepo.findById(id).map(t->{
-			bovin.setTroupeau(t);
-			return brepo.save(bovin);
-		}).orElseThrow(()->new ResourceNotFoundException("TroupeauId",null, bovin));
-	}
-	
-	
-	@GetMapping("troupeau/{id}")
-	public Optional<Troupeau> getTroupeauById(@PathVariable("id") Long id) {
-		return tRepo.findById(id);
-	}
-	
-	@PutMapping("/troupeau/{id}")
-	public Troupeau updateTroupeau(@PathVariable("id") Long id, @RequestBody Troupeau troup) throws ResourceNotFoundException {
-		return tservice.updateTroupeau(troup, id);
-		
-	}
-	
-	@DeleteMapping("/troupeau/{id}")
-	public void deleteTroupeauById(@PathVariable("id") Long id) {
-		tRepo.deleteById(id);
-		return;
-	}
+	    if (name == null)
+	    	troupRepo.findAll().forEach(troups::add);
+	    else
+	    	troupRepo.findByName(name).forEach(troups::add);
 
+	    if (troups.isEmpty()) {
+	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	    }
+
+	    return new ResponseEntity<>(troups, HttpStatus.OK);
+	  }
+
+	  @GetMapping("/troupeau/{id}")
+	  public ResponseEntity<Troupeau> getTroupeauById(@PathVariable("id") long id) {
+		  Troupeau troups = troupRepo.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("Not found Troupeau with id = " + id));
+
+	    return new ResponseEntity<>(troups, HttpStatus.OK);
+	  }
+
+	  @PostMapping("/troupeau")
+	  public ResponseEntity<Troupeau> createTroupeau(@RequestBody Troupeau troup) {
+		  Troupeau _troups = troupRepo.save(new Troupeau(troup.getName(), troup.getDescription()));
+	    return new ResponseEntity<>(_troups, HttpStatus.CREATED);
+	  }
+
+	  @PutMapping("/troupeau/{id}")
+	  public ResponseEntity<Troupeau> updateTroupeau(@PathVariable("id") long id, @RequestBody Troupeau tutorial) {
+		  Troupeau _troup = troupRepo.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("Not found Troupeau with id = " + id));
+
+	    _troup.setName(tutorial.getName());
+	    _troup.setDescription(tutorial.getDescription());
+	    
+	    return new ResponseEntity<>(troupRepo.save(_troup), HttpStatus.OK);
+	  }
+
+	  @DeleteMapping("/troupeau/{id}")
+	  public ResponseEntity<HttpStatus> deleteTroupeau(@PathVariable("id") long id) {
+		  troupRepo.deleteById(id);
+	  
+	    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	  }
+
+	  @DeleteMapping("/troupeau")
+	  public ResponseEntity<HttpStatus> deleteAllTutorials() {
+		  troupRepo.deleteAll();
+	    
+	    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	  }
 	
 
 }
