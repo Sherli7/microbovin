@@ -1,10 +1,10 @@
-package spring.sherli.microservice.repository;
+package cm.sherli.api.mycow.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import spring.sherli.microservice.entity.Troupeau;
+import cm.sherli.api.mycow.model.Troupeau;
 
 public interface TroupeauRepo extends JpaRepository<Troupeau, Long> {
 

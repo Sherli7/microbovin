@@ -1,4 +1,4 @@
-package spring.sherli.microservice.entity;
+package cm.sherli.api.mycow.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

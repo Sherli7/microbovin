@@ -1,4 +1,4 @@
-package spring.sherli.microservice.controller;
+package cm.sherli.api.mycow.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import spring.sherli.microservice.entity.Bovins;
-import spring.sherli.microservice.entity.Race;
-import spring.sherli.microservice.entity.Robe;
-import spring.sherli.microservice.exception.ResourceNotFoundException;
-import spring.sherli.microservice.repository.BovinRepo;
-import spring.sherli.microservice.repository.RaceRepository;
-import spring.sherli.microservice.repository.TroupeauRepo;
+import cm.sherli.api.mycow.exception.ResourceNotFoundException;
+import cm.sherli.api.mycow.model.Bovins;
+import cm.sherli.api.mycow.model.Race;
+import cm.sherli.api.mycow.model.Robe;
+import cm.sherli.api.mycow.repository.BovinRepo;
+import cm.sherli.api.mycow.repository.RaceRepository;
+import cm.sherli.api.mycow.repository.TroupeauRepo;
 
 @CrossOrigin(origins = "*")
 @RestController

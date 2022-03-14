@@ -1,4 +1,4 @@
-package spring.sherli.microservice.entity;
+package cm.sherli.api.mycow.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,64 +7,45 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 
+@SuppressWarnings("serial")
 @Entity
-public class Robe extends AuditModel {
+public class Troupeau extends AuditModel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
-
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long robeId;
-
+	@Column(name="troupeauid")
+    private Long troupeauId;
 	@Column(name="name")
 	private String name;
 	@Column(name="description")
 	private String description;
-	@Column(name="origine")
-	private String pays;
-
 	
-	public Long getRobeId() {
-		return robeId;
+	public Long getTroupeauId() {
+		return troupeauId;
 	}
-
-	public void setRobeId(Long robeId) {
-		this.robeId = robeId;
+	public void setTroupeauId(Long troupeauId) {
+		this.troupeauId = troupeauId;
 	}
-
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public String getPays() {
-		return pays;
-	}
-
-	public void setPays(String pays) {
-		this.pays = pays;
-	}
-
-	public Robe(String name, String description, String pays) {
+	public Troupeau(String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.pays = pays;
 	}
 	
-	public Robe(){}
+
+	
 	
 }

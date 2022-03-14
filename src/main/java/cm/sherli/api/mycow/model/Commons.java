@@ -1,4 +1,4 @@
-package spring.sherli.microservice.entity;
+package cm.sherli.api.mycow.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

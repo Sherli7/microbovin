@@ -1,4 +1,4 @@
-package spring.sherli.microservice.entity;
+package cm.sherli.api.mycow.model;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

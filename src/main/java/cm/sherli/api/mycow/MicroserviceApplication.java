@@ -1,4 +1,4 @@
-package spring.sherli.microservice;
+package cm.sherli.api.mycow;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

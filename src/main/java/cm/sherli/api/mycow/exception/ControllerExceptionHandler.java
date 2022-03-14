@@ -1,4 +1,4 @@
-package spring.sherli.microservice.exception;
+package cm.sherli.api.mycow.exception;
 
 import java.util.Date;
 
